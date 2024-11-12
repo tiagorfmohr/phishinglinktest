@@ -23,7 +23,9 @@ virtualenv, flask, numpy, tensorflow, joblib, scikit-learn
 -Name "LongPathsEnabled" -Value 1 -PropertyType DWORD -Force
 ```
 
+## Licença
 
+[MIT](https://choosealicense.com/licenses/mit/)
 
 
 ## Autores
