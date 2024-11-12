@@ -2,17 +2,24 @@
 
 ### Para rodar a aplicação é necessário instalar as seguintes bibliotecas:
 
-`pip install virtualenv`
-
-`pip install flask`
-
-`pip install numpy`
-
-`pip install tensorflow`
-
-`pip install joblib`
-
-`pip install -U scikit-learn`
+```bash
+pip install virtualenv
+```
+```bash
+pip install flask
+```
+```bash
+pip install numpy
+```
+```bash
+pip install tensorflow
+```
+```bash
+pip install joblib
+```
+```bash
+pip install -U scikit-learn
+```
 
 virtualenv, flask, numpy, tensorflow, joblib, scikit-learn
 
