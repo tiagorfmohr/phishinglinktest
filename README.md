@@ -33,7 +33,7 @@ virtualenv, flask, numpy, tensorflow, joblib, scikit-learn
 ## Autores
 
 - [@AleFeliphe](https://github.com/AleFeliphe)
-- [@tiagorfm](https://github.com/tiagorfmohr)
+- [@TiagoRFM](https://github.com/tiagorfmohr)
 
 ### Agradecimentos
 - [@theluanz](https://github.com/theluanz)
