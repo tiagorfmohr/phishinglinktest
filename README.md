@@ -1,5 +1,6 @@
 # phishinglinktest
 
+Para rodar a aplicação é necessário instalar as seguintes bibliotecas:
 
 `pip install virtualenv`
 
