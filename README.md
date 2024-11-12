@@ -23,10 +23,9 @@ virtualenv, flask, numpy, tensorflow, joblib, scikit-learn
 -Name "LongPathsEnabled" -Value 1 -PropertyType DWORD -Force
 ```
 
-## Licença
+## Base de Links de Phising
 
-[MIT](https://choosealicense.com/licenses/mit/)
-
+- [@Phishing.Database](https://github.com/mitchellkrogza/Phishing.Database)
 
 ## Autores
 
