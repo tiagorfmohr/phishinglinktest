@@ -27,6 +27,9 @@ virtualenv, flask, numpy, tensorflow, joblib, scikit-learn
 
 - [@Phishing.Database](https://github.com/mitchellkrogza/Phishing.Database)
 
+## Ferramenta de Raspagem de Links Reais
+- [LinkScraper](https://github.com/tiagorfmohr/LinkScraper)
+
 ## Autores
 
 - [@AleFeliphe](https://github.com/AleFeliphe)
