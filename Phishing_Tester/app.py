@@ -1,9 +1,34 @@
 from flask import Flask, render_template, request, session, redirect, url_for
+from flask_sqlalchemy import SQLAlchemy
 import numpy as np
 from tensorflow.keras.models import load_model
 import joblib
 from urllib.parse import urlparse
 import socket
+
+
+# Configuração do app Flask e do banco de dados
+app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///phishing_urls.db'  # Banco SQLite
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False  # Desabilita o aviso de modificações
+app.secret_key = 'supersecretkey'  # Chave secreta para a sessão
+
+# Inicializando o banco de dados
+db = SQLAlchemy(app)
+
+# Modelo de URL no banco de dados
+class URLRecord(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    url = db.Column(db.String(500), nullable=False)
+    probability = db.Column(db.Float, nullable=False)
+
+    def __repr__(self):
+        return f"<URLRecord {self.url} - {self.probability}%>"
+
+# Criar as tabelas no banco de dados (caso não existam)
+with app.app_context():
+    db.create_all()
+
 
 # Função para analisar a URL e extrair as características
 class URLAnalyzer:
@@ -86,13 +111,6 @@ def classify_url(model, scaler, url):
     phishing_probability = float(prediction[0][0]) * 100  # Converte para float
     return round(phishing_probability, 2)  # Limita a duas casas decimais
 
-
-# Criando o app Flask
-app = Flask(__name__)
-
-# Necessário para usar sessões no Flask
-app.secret_key = 'supersecretkey'  # Chave secreta para a sessão
-
 # Rota principal que renderiza o formulário HTML
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -106,36 +124,38 @@ def index():
         # Consultar a URL
         probability = classify_url(model, scaler, url)
         
-        # Adicionar a URL e a probabilidade ao histórico da sessão
-        if 'history' not in session:
-            session['history'] = []
+        # Armazenar o resultado no banco de dados
+        url_record = URLRecord(url=url, probability=probability)
+        db.session.add(url_record)
+        db.session.commit()
         
-        session['history'].append({'url': url, 'probability': round(probability, 2)})
-        
-        # Salvar as alterações na sessão
-        session.modified = True
-        
+        # Recuperar todas as URLs verificadas do banco de dados
+        history = URLRecord.query.all()
+
         # Exibir o resultado
-        return render_template('index.html', url=url, probability=probability, history=session['history'])
+        return render_template('index.html', url=url, probability=probability, history=history)
     
     # Caso o método seja GET ou não haja submissão, apenas exibe a página com o histórico (se houver)
-    return render_template('index.html', url=None, probability=None, history=session.get('history', []))
+    history = URLRecord.query.all()
+    return render_template('index.html', url=None, probability=None, history=history)
+
 
 # Rota para remover uma URL do histórico
-@app.route('/remove/<int:index>', methods=['POST'])
-def remove_url(index):
-    """Remove uma URL do histórico pelo índice."""
-    if 'history' in session and 0 <= index < len(session['history']):
-        session['history'].pop(index)  # Remove o item no índice
-        session.modified = True  # Indica que a sessão foi modificada
+@app.route('/remove/<int:id>', methods=['POST'])
+def remove_url(id):
+    """Remove uma URL do histórico pelo ID."""
+    url_record = URLRecord.query.get(id)
+    if url_record:
+        db.session.delete(url_record)
+        db.session.commit()
     return redirect(url_for('index'))  # Redireciona de volta à página inicial
 
 # Rota para limpar todo o histórico
 @app.route('/clear_history', methods=['POST'])
 def clear_history():
     """Limpa todo o histórico de URLs."""
-    session['history'] = []  # Limpa o histórico
-    session.modified = True  # Indica que a sessão foi modificada
+    URLRecord.query.delete()  # Deleta todos os registros
+    db.session.commit()
     return redirect(url_for('index'))  # Redireciona de volta à página inicial
 
 if __name__ == '__main__':
