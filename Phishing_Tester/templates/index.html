@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verificador de Phishing</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1e1e1e;
+            color: #fff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* Cabeçalho fixo no topo */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: #333;
+            padding: 20px;
+            text-align: center;
+            z-index: 1000;
+        }
+
+        .header h1 {
+            color: #FFAE00;
+            margin: 0;
+        }
+
+        .header form {
+            margin-top: 10px;
+        }
+
+        .header input[type="text"] {
+            padding: 10px;
+            width: 80%;
+            max-width: 500px;
+            font-size: 16px;
+            border: 1px solid #444;
+            background-color: #333;
+            color: #fff;
+            border-radius: 5px;
+        }
+
+        .header button {
+            background-color: #FFAE00;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 80%;
+            max-width: 500px;
+            margin-top: 10px;
+        }
+
+        .header button:hover {
+            background-color: #e69900;
+        }
+
+        /* Contêiner principal para o conteúdo */
+        .content {
+            padding-top: 180px; /* Espaço para o cabeçalho fixo */
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .result {
+            margin-top: 20px;
+            background-color: #444;
+            padding: 20px;
+            border-radius: 5px;
+        }
+
+        .result p {
+            font-size: 20px;
+            color: #FFAE00;
+        }
+
+        /* Histórico de consultas */
+        .history {
+            margin-top: 40px;
+            background-color: #444;
+            padding: 20px;
+            border-radius: 5px;
+            width: 100%;
+            max-width: 800px; /* Limita a largura da tabela */
+            overflow-x: auto;
+            text-align: center; /* Garante que o conteúdo da tabela será centralizado */
+        }
+
+        .history table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .history th, .history td {
+            padding: 10px;
+            text-align: left;
+        }
+
+        .history th {
+            background-color: #333;
+        }
+
+        .history tr:nth-child(even) {
+            background-color: #555;
+        }
+
+        .history td {
+            word-wrap: break-word; /* Quebra de palavras longas */
+            max-width: 200px; /* Limite de largura das células */
+        }
+
+        .history button {
+            background-color: #e63946;
+            color: #fff;
+            border: none;
+            padding: 5px 10px;
+            font-size: 14px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .history button:hover {
+            background-color: #d42f35;
+        }
+
+        .clear-history-btn {
+            background-color: #e63946;
+            margin-top: 20px;
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .header input[type="text"] {
+                font-size: 14px;
+                padding: 8px;
+                width: 100%;
+            }
+
+            .header button {
+                padding: 6px 12px;
+                font-size: 14px;
+            }
+
+            .history table {
+                font-size: 14px;
+            }
+        }
+
+        /* Cores para probabilidade de phishing */
+        .danger {
+            color: red;
+        }
+
+        .safe {
+            color: green;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>Verificador de Phishing</h1>
+
+        <!-- Formulário para inserção da URL -->
+        <form action="/" method="POST">
+            <input type="text" name="url" placeholder="Digite a URL para verificar..." required>
+            <button type="submit">Verificar</button>
+        </form>
+    </div>
+
+    <!-- Contêiner para o restante do conteúdo -->
+    <div class="content">
+        {% if url %}
+        <div class="result">
+            <p>URL: {{ url }}</p>
+            <p class="{% if probability > 75 %}danger{% else %}safe{% endif %}">
+                {{ probability }}% de chance de ser phishing
+            </p>
+        </div>
+        {% endif %}
+
+        <!-- Histórico de consultas -->
+        <div class="history">
+            <h3>Histórico de Consultas</h3>
+            <table>
+                <tr>
+                    <th>URL</th>
+                    <th>Probabilidade</th>
+                    <th>Ações</th>
+                </tr>
+                {% for item in history %}
+                <tr>
+                    <td>{{ item.url }}</td>
+                    <td class="{% if item.probability > 75 %}danger{% else %}safe{% endif %}">
+                        {{ item.probability }}%
+                    </td>
+                    <td>
+                        <!-- Botão para remover consulta -->
+                        <form action="/remove/{{ loop.index0 }}" method="POST" style="display:inline;">
+                            <button type="submit">Remover</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+            {% if history %}
+            <form action="/clear_history" method="POST">
+                <button type="submit" class="clear-history-btn">Limpar Histórico</button>
+            </form>
+            {% endif %}
+        </div>
+    </div>
+
+</body>
+</html>
