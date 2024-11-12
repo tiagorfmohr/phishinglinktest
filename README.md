@@ -15,3 +15,8 @@ Para rodar a aplicação é necessário instalar as seguintes bibliotecas:
 `pip install -U scikit-learn`
 
 virtualenv, flask, numpy, tensorflow, joblib, scikit-learn
+
+Caso ocorra erros na instalação do tensorflow, abra o powershell como adminisrtador e execute:
+
+`New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem" `
+-Name "LongPathsEnabled" -Value 1 -PropertyType DWORD -Force`
