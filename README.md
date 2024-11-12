@@ -1,6 +1,6 @@
 # phishinglinktest.com.br
 
-## Para rodar a aplicação é necessário instalar as seguintes bibliotecas:
+### Para rodar a aplicação é necessário instalar as seguintes bibliotecas:
 
 `pip install virtualenv`
 
@@ -16,7 +16,7 @@
 
 virtualenv, flask, numpy, tensorflow, joblib, scikit-learn
 
-## Caso ocorra erros na instalação do tensorflow, abra o powershell como adminisrtador e execute:
+### Caso ocorra erros na instalação do tensorflow, abra o powershell como adminisrtador e execute:
 
 ```bash
   New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem" `
@@ -28,5 +28,5 @@ virtualenv, flask, numpy, tensorflow, joblib, scikit-learn
 
 ## Autores
 
-- [@tiagorfm](https://github.com/tiagorfmohr)
 - [@AleFelipe](https://github.com/AleFeliphe)
+- [@tiagorfm](https://github.com/tiagorfmohr)
